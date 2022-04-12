@@ -30,4 +30,4 @@ Is to be ther first player to win all 52 cards.
 
 ### Future Updates / Patches
 * Comparison between suits
-* If tie exists, each player puts down 3 cards (face down), and turns over 1 card, the higher card takes all the cards (in this case in total 8 cards)
+* If DRAW, each player puts down 3 cards (face down), and turns over 1 card, the higher card takes all the cards (in this case in total 8 cards)
