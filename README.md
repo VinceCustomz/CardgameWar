@@ -13,12 +13,13 @@ Is to be ther first player to win all 52 cards.
 ### Screenshots
 
 ### Start of Game
-
-### During the Game
+![image](https://user-images.githubusercontent.com/102340067/163060294-dd4841ed-2827-4486-9d55-943db3ab7c26.png)
 
 ### Victory
+![image](https://user-images.githubusercontent.com/102340067/163060370-db4fea31-28f1-428b-ac36-d4972541571d.png)
 
 ### Loss
+![image](https://user-images.githubusercontent.com/102340067/163060395-c406d793-2b90-48b9-ae30-ac98a216b5c8.png)
 
 ### Resources used
 * Javascript
