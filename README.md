@@ -1,25 +1,27 @@
-# The Card Game of War - Consume or be Consumed
+# The Card Game of War
+
+Click here to play!
 
 ### The Goal
-Is to be ther first player to win all 52 cards.
+Win more rounds than the computer!
 
 ### How to Play
-* The deck is divided evenly between the player(you) and the computer, face down. 
-* Click anywhere on the screen to start the game.
-* Each player turns up a card at the same time, and then higher card takes both cards and puts them, face down on the bottom of their stacks
+* Click anywhere to begin
+* Both player and computer receive a card from the deck, higher card wins!
+* Play a total of 26 rounds, luckier person(or robot) wins it all!
 * Suits do not matter
-* If the cards are the same rank, it is a tie, and it is returned to the bottom of its owner's deck
+* If the cards are the same rank(number), it is a Draw
 
 ### Screenshots
 
 ### Start of Game
-![image](https://user-images.githubusercontent.com/102340067/163060294-dd4841ed-2827-4486-9d55-943db3ab7c26.png)
+![image](https://user-images.githubusercontent.com/102340067/163296530-9727c17e-6fce-4820-9d5d-4b49931a0127.png)
 
 ### Victory
-![image](https://user-images.githubusercontent.com/102340067/163060370-db4fea31-28f1-428b-ac36-d4972541571d.png)
+![image](https://user-images.githubusercontent.com/102340067/163296654-7314a084-0552-4742-8afb-b78672c906bc.png)
 
 ### Loss
-![image](https://user-images.githubusercontent.com/102340067/163060395-c406d793-2b90-48b9-ae30-ac98a216b5c8.png)
+![image](https://user-images.githubusercontent.com/102340067/163296583-ea7aa562-658e-4e9d-8e1d-05a523611870.png)
 
 ### Resources used
 * Javascript
@@ -30,4 +32,5 @@ Is to be ther first player to win all 52 cards.
 
 ### Future Updates / Patches
 * Comparison between suits
-* If DRAW, each player puts down 3 cards (face down), and turns over 1 card, the higher card takes all the cards (in this case in total 8 cards)
+* Implement DRAW feature where, each player puts down 3 cards (face down), and turns over 1 card, the higher card wins more points!
+* Split the deck evenly into two decks where, the winner takes the card of the loser
