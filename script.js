@@ -1,6 +1,21 @@
-import Deck from "./deck.js";
+const SUITS = ["♠", "♣", "♥", "♦"];
+const VALUES = [
+  "A",
+  "2",
+  "3",
+  "4",
+  "5",
+  "6",
+  "7",
+  "8",
+  "9",
+  "10",
+  "J",
+  "Q",
+  "K",
+];
 
-const CARD_VALUE_MAP = {
+const CARD_VALUES = {
   2: 2,
   3: 3,
   4: 4,
@@ -16,17 +31,65 @@ const CARD_VALUE_MAP = {
   A: 14,
 };
 
+class Deck {
+  constructor(cards = freshDeck()) {
+    this.cards = cards;
+  }
+
+  get numberOfCards() { //binds "this.cards.length" to "numberOfCards" so that will be called when the property is looked up
+    return this.cards.length;
+  }
+
+  pop() {
+    return this.cards.shift(); //takes first element of our array, takes it off and returns it to us
+  }
+
+  shuffle() {
+    //shuffles the deck randomly; loops until each all 52 cards are randomized
+    for (let i = this.numberOfCards - 1; i > 0; i--) {
+      const newIndex = Math.floor(Math.random() * (i + 1));
+      const oldIndex = this.cards[newIndex];
+      this.cards[newIndex] = this.cards[i];
+      this.cards[i] = oldIndex;
+    }
+  }
+}
+
+class Card {
+  constructor(suit, value) {
+    this.suit = suit;
+    this.value = value;
+  }
+
+  get color() {
+    //determines the color of the card displayed
+    return this.suit === "♣" || this.suit === "♠" ? "black" : "red";
+  }
+
+  displayCard() {
+    const cardDisplayed = document.createElement("div");
+    cardDisplayed.innerText = this.suit;
+    cardDisplayed.classList.add("card", this.color);
+    cardDisplayed.dataset.value = `${this.value}`; //.dataset accesses the data-value in the card (for example 9, then takes the appropriate suit and displays it)
+    return cardDisplayed;
+  }
+  //getHTML will essentially output the following
+  // <div class="card red" data-value="9 ♥">
+  // </div>
+}
+
 const computerCardSlot = document.querySelector(".computer-card-slot");
 const playerCardSlot = document.querySelector(".player-card-slot");
-const computerDeckElement = document.querySelector(".computer-deck");
-const playerDeckElement = document.querySelector(".player-deck");
+const universalDeckElement = document.querySelector(".universal-deck");
 const text = document.querySelector(".text");
+const playerScoreSlot = document.querySelector(".player-score");
+const computerScoreSlot = document.querySelector(".computer-score");
 
-let playerDeck, computerDeck, inRound, stop;
+let universalDeck, inRound, stopGame, playerScore, computerScore;
 
 document.addEventListener("click", () => {
   //if inRound = true, start cleanBeforeRound, else, flipCards.
-  if (stop) {
+  if (stopGame) {
     startGame();
     return;
   }
@@ -39,78 +102,87 @@ document.addEventListener("click", () => {
 });
 
 startGame();
+
+//---functions------------------------------------------------------------------------------------------------
+
+function freshDeck() {
+  //Creates a super array; combines suit and value into one array for each symbol, then combines each symbol+value into one super array
+  return SUITS.flatMap((suit) => {
+    return VALUES.map((value) => {
+      return new Card(suit, value);
+    });
+  });
+}
+
 function startGame() {
   const deck = new Deck();
   deck.shuffle();
 
-  const deckMidpoint = Math.ceil(deck.numberOfCards / 2); //math.ceil rounds a number up to the next largest integer (when the deck is an odd number)
+  universalDeck = new Deck(deck.cards.slice(0, deck.numberOfCards));
 
-  playerDeck = new Deck(deck.cards.slice(0, deckMidpoint)); //slice the deck from 0 to midpoint, then create a new deck from these cards.
-  computerDeck = new Deck(deck.cards.slice(deckMidpoint, deck.numberOfCards)); //same thing, but start at midpoint, and end at "52" (deck.numberOfCards = 52)
   inRound = false;
-  stop = false;
+  stopGame = false;
+  playerScore = 0;
+  computerScore = 0;
+  playerScoreSlot.innerText = "0";
+  computerScoreSlot.innerText = "0";
 
   cleanBeforeRound();
 }
 
-// computerCardSlot.appendChild(deck.cards[0].getHTML()) //have computer-card-slot attach the first random card from its deck to the variable
-
 function cleanBeforeRound() {
-  //
   inRound = false;
   computerCardSlot.innerHTML = "";
   playerCardSlot.innerHTML = "";
-  text.innerText = "";
+  text.innerHTML = "";
 
   updateDeckCount();
 }
 
 function updateDeckCount() {
-  computerDeckElement.innerText = computerDeck.numberOfCards;
-  playerDeckElement.innerText = playerDeck.numberOfCards;
+  universalDeckElement.innerText = universalDeck.numberOfCards;
 }
 
 function flipCards() {
   inRound = true;
 
-  const playerCard = playerDeck.pop(); //removes the last element of the array and returns that element. This changes the length of the array.
-  const computerCard = computerDeck.pop(); //do the same with comp
+  const playerCard = universalDeck.pop();
+  const computerCard = universalDeck.pop();
 
-  playerCardSlot.appendChild(playerCard.getHTML());
-  computerCardSlot.appendChild(computerCard.getHTML());
+  playerCardSlot.appendChild(playerCard.displayCard());
+  computerCardSlot.appendChild(computerCard.displayCard());
 
-  updateDeckCount(); //update the deck count after clicking
+  updateDeckCount();
 
   if (isRoundWinner(playerCard, computerCard)) {
-    //Card win condition and result; cards go into players deck
-    text.innerText = "Win - Player Gained a Card!";
-    playerDeck.push(playerCard);
-    playerDeck.push(computerCard);
+    text.innerText = "Player Wins!";
+    playerScore++;
+    playerScoreSlot.innerText = `${playerScore}`;
   } else if (isRoundWinner(computerCard, playerCard)) {
-    //Card lose condition; cards go into computers deck
-    text.innerText = "Lose - Player Lost a Card!";
-    computerDeck.push(playerCard);
-    computerDeck.push(computerCard);
+    text.innerText = "Computer Wins!";
+    computerScore++;
+    computerScoreSlot.innerText = `${computerScore}`;
   } else {
-    //Card draw condition; cards go back into respective decks
-    text.innerText = "Draw - Nothing Happens!";
-    playerDeck.push(playerCard);
-    computerDeck.push(computerCard);
+    text.innerText = "DRAW!";
   }
 
-  if (isGameOver(playerDeck)) {
-    text.innerText = "You LOSE!";
-    stop = true;
-  } else if (isGameOver(computerDeck)) {
-    text.innerText = "You WIN!";
-    stop = true;
+  if (gameOver(universalDeck)) {
+    if (playerScore > computerScore) {
+      text.innerText =
+        "PLAYER WINS! ...You survive another day...until COVID gets you.";
+    } else if (computerScore > playerScore) {
+      text.innerText = "COMPUTER WINS! ...everyone is dead. ";
+    } else {
+      text.innerText = "DRAW! Justin is dead.";
+    }
+    stopGame = true;
   }
 }
 
-function isRoundWinner(cardOne, cardTwo) {
-  return CARD_VALUE_MAP[cardOne.value] > CARD_VALUE_MAP[cardTwo.value];
+function isRoundWinner(cardOfPlayer, cardOfComputer) {
+  return CARD_VALUES[cardOfPlayer.value] > CARD_VALUES[cardOfComputer.value];
 }
 
-function isGameOver(deck) {
-  return deck.numberOfCards === 0;
+function gameOver(universalDeck) {
+  return universalDeck.numberOfCards === 0;
 }
